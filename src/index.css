@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Be Vietnam Pro", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque", "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
+  /* Biển sâu / đầm / đỏ bưu chính / nắng */
+  --color-ink: #0b2e4a;
+  --color-brand-50: #eef8fa;
+  --color-brand-100: #d2eef2;
+  --color-brand-500: #1aa3b5;
+  --color-brand-600: #0e8aa0;
+  --color-brand-700: #0b5f7a;
+  --color-brand-800: #0b3f5c;
+  --color-paper: #f1f7f8;
+  --color-stamp: #e8412c;
+  --color-sun: #ffc94d;
+  --color-on-stamp: #ffffff;
+}
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: #17324a;
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.leaflet-container { font-family: var(--font-sans); height: 100%; width: 100%; }
+.ts-marker { background: none; border: none; }
+.ts-marker > div {
+  width: 34px; height: 34px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+  display: grid; place-items: center; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35);
+}
+.ts-marker > div > span { transform: rotate(45deg); font-size: 16px; line-height: 1; }
+
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+
+@media print {
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area { position: fixed; inset: 0; display: grid; place-items: center; background: #fff; }
+}
+
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+
+/* Viền tem thư: khoét lỗ răng cưa quanh mép, giữa tem giữ nguyên */
+.perf {
+  --s: 16px;
+  --r: 4.5px;
+  padding: 10px;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle var(--r) at calc(var(--s) / 2) calc(var(--s) / 2), #0000 98%, #000) 0 0 / var(--s) var(--s);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle var(--r) at calc(var(--s) / 2) calc(var(--s) / 2), #0000 98%, #000) 0 0 / var(--s) var(--s);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sheet-in { animation: sheet-in 0.28s ease-out both; }
+  @keyframes sheet-in {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: none; }
+  }
+  .stamp-in { animation: stamp-in 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+  @keyframes stamp-in {
+    from { opacity: 0; transform: scale(1.25) rotate(-8deg); }
+    to { opacity: 1; transform: scale(1) rotate(var(--tilt, 3deg)); }
+  }
+}
