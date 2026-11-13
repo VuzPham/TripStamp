@@ -46,7 +46,7 @@ export default function PlacesMap({ places, selectedId, onSelect, userPosition, 
   const center = useMemo(() => [city?.lat ?? NHA_TRANG_CENTER.lat, city?.lng ?? NHA_TRANG_CENTER.lng], [city?.lat, city?.lng])
   return (
     <div className={className}>
-      <MapContainer center={center} zoom={city?.zoom ?? 13} scrollWheelZoom className="rounded-2xl">
+      <MapContainer center={center} zoom={city?.zoom ?? 13} scrollWheelZoom className="rounded-2xl" tap={false}>
         {/* Tile OpenStreetMap: tuân thủ chính sách sử dụng tile (giữ attribution, không tải hàng loạt). */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -61,23 +61,23 @@ export default function PlacesMap({ places, selectedId, onSelect, userPosition, 
             icon={markerIcon(p.category, p.id === selectedId, p.isHot)}
             eventHandlers={{ click: () => onSelect?.(p.id) }}
           >
-            <Popup minWidth={220} maxWidth={260}>
-              <div className="-m-1 w-[220px] overflow-hidden">
-                <PlaceThumb place={p} className="h-20 rounded-lg" />
+            <Popup minWidth={170} maxWidth={230} autoPanPaddingTopLeft={[16, 16]} autoPanPaddingBottomRight={[16, 16]}>
+              <div className="-m-1 w-[min(210px,60vw)] overflow-hidden">
+                <PlaceThumb place={p} className="hidden h-20 rounded-lg sm:block" />
                 <div className="pt-2">
                   <p className="text-xs font-semibold" style={{ color: p.category?.color }}>
                     {p.category?.name}
                   </p>
-                  <h3 className="text-base font-bold leading-tight">{p.name}</h3>
+                  <h3 className="text-sm font-bold leading-tight sm:text-base">{p.name}</h3>
                   <div className="mt-1 flex items-center gap-2">
                     {p.isHot && <HotBadge />}
                     <RatingInline place={p} />
                   </div>
-                  <p className="mt-0.5 text-xs text-gray-600">{p.address}</p>
-                  <p className="mt-1 text-xs text-gray-700">{p.description}</p>
+                  <p className="mt-0.5 line-clamp-1 text-xs text-gray-600">{p.address}</p>
+                  <p className="mt-1 hidden max-h-14 overflow-hidden text-xs text-gray-700 sm:block">{p.description}</p>
                   <Link
                     to={`/places/${p.slug}`}
-                    className="mt-2 inline-block rounded-lg bg-brand-700 px-3 py-1.5 text-xs font-semibold !text-white"
+                    className="mt-1.5 inline-block rounded-lg bg-brand-700 px-3 py-1.5 text-xs font-semibold !text-white"
                   >
                     Xem chi tiết
                   </Link>

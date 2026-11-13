@@ -18,7 +18,7 @@ Nếu chưa có file `.env.local`, app chạy ở **chế độ demo**: dùng 15
 ## 2. Kết nối Supabase (bản chạy thật)
 
 1. Tạo project tại supabase.com.
-2. Vào **SQL Editor**, chạy lần lượt `supabase/schema.sql`, `supabase/admin.sql`, `supabase/reviews.sql`, `supabase/media.sql`, `supabase/cities.sql` rồi `supabase/seed.sql`. Nếu đã chạy bản cũ: chạy lại `cities.sql` (thêm slogan, khu vực) rồi chạy lại `seed.sql`.
+2. Vào **SQL Editor**, chạy lần lượt `supabase/schema.sql`, `supabase/admin.sql`, `supabase/reviews.sql`, `supabase/media.sql`, `supabase/cities.sql`, `supabase/profile.sql` rồi `supabase/seed.sql`. Nếu đã chạy bản cũ: chạy lại `cities.sql` (thêm slogan, khu vực) rồi chạy lại `seed.sql`.
 3. **Authentication → URL Configuration**: thêm URL local (`http://localhost:5173`) và URL Vercel vào Site URL / Redirect URLs. Nếu muốn đăng ký khỏi cần xác nhận email khi thử nghiệm, tắt “Confirm email” ở Providers → Email.
 4. Sao chép `.env.example` thành `.env.local`, điền `VITE_SUPABASE_URL` và `VITE_SUPABASE_PUBLISHABLE_KEY` (Project Settings → API).
 5. `npm run dev`.
@@ -78,6 +78,14 @@ Bảo mật: quyền admin được kiểm tra ở database (`is_admin()` + RLS 
 - **Bộ chọn khu vực** (`components/Location/LocationSelector.jsx`) dùng chung ở thanh trên, Home, Khám phá và Chi tiết địa điểm: chọn tỉnh/thành + quận/khu vực, tìm nhanh, hoặc dùng GPS (xử lý trường hợp từ chối quyền / không lấy được vị trí / ngoài vùng hỗ trợ). Vị trí lưu ở `CityContext` (và localStorage) nên mọi trang đổi theo.
 - **Ảnh nền theo thành phố:** vào `/admin/cities`, tải ảnh nền cho từng thành phố (lưu ở Supabase Storage), nhập slogan. Chưa có ảnh thì dùng tranh minh hoạ mặc định. Khu vực (quận/huyện) quản lý ở `/admin/areas`; gán khu vực cho địa điểm ở `/admin/places`.
 - **Yêu cầu đăng nhập:** `/scan`, `/claim`, `/collection`, `/rewards` được bọc bởi `ProtectedRoute`; chưa đăng nhập sẽ chuyển tới `/login` với thông báo “Login Required” và quay lại đúng trang cũ sau khi đăng nhập. Home, Khám phá, Chi tiết địa điểm, `/login`, `/register` công khai. Đây chỉ là lớp giao diện — dữ liệu cá nhân vẫn do RLS và các hàm RPC trong Supabase bảo vệ.
+
+## 3e. Hồ sơ và đăng nhập Google / Facebook
+
+- **Hồ sơ:** chạy `supabase/profile.sql` (thêm họ tên, số điện thoại, ngày sinh, nơi ở, giới thiệu, bucket ảnh đại diện `avatars`). Người dùng sửa ở `/profile`; chỉ sửa được hồ sơ của chính mình, không tự đổi được `role`.
+- **Google:** Google Cloud Console → APIs & Services → Credentials → tạo *OAuth client ID* (Web). Authorized redirect URI: `https://<project>.supabase.co/auth/v1/callback`. Dán Client ID/Secret vào Supabase → Authentication → Providers → Google → bật.
+- **Facebook:** developers.facebook.com → tạo app → thêm *Facebook Login* → Valid OAuth Redirect URI: `https://<project>.supabase.co/auth/v1/callback`. Dán App ID/Secret vào Supabase → Authentication → Providers → Facebook → bật.
+- Supabase → Authentication → URL Configuration: đặt *Site URL* là domain Vercel của bạn và thêm `https://<domain>/login` (và `http://localhost:5173/login`) vào *Redirect URLs*.
+- Chưa bật nhà cung cấp nào thì nút tương ứng báo lỗi thân thiện; đăng nhập bằng email vẫn dùng bình thường. Chế độ demo ẩn hai nút này.
 
 ## 4. Deploy lên Vercel
 

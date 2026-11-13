@@ -136,7 +136,7 @@ export default function Explore() {
 
       <div className={cn('grid gap-4', view === 'map' && 'md:grid-cols-[1fr_340px]')}>
         {view === 'map' && (
-          <div className="h-[46vh] overflow-hidden rounded-2xl border border-black/5 md:sticky md:top-20 md:h-[calc(100vh-11rem)]">
+          <div className="h-[68dvh] min-h-[22rem] overflow-hidden rounded-2xl border border-black/5 md:sticky md:top-20 md:h-[calc(100vh-11rem)]">
             {loading ? (
               <div className="grid h-full place-items-center bg-white"><Spinner /></div>
             ) : (

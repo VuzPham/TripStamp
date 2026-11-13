@@ -21,13 +21,13 @@ export default function LocationBanner({ size = 'hero', as: Title = 'h1', aside,
     <section
       className={cn(
         'relative overflow-hidden rounded-[2rem] text-white',
-        hero ? 'px-6 py-10 md:px-12 md:py-14' : 'px-5 py-6 md:px-8 md:py-7',
+        hero ? 'px-6 py-10 md:px-12 md:py-14' : 'px-4 py-4 md:px-8 md:py-7',
         className,
       )}
     >
       <CityBackdrop city={city} />
       <div className={cn('relative grid items-center gap-8', aside && 'md:grid-cols-[1.15fr_0.85fr]')}>
-        <div className="max-w-xl space-y-4">
+        <div className={cn('max-w-xl', hero ? 'space-y-4' : 'space-y-2.5 md:space-y-4')}>
           <LocationSelector variant="hero" onSelect={onSelect} />
           <motion.div
             key={city.id}
@@ -36,10 +36,10 @@ export default function LocationBanner({ size = 'hero', as: Title = 'h1', aside,
             transition={{ duration: 0.5, delay: 0.1 }}
             className="space-y-3"
           >
-            <Title className={cn('font-display font-extrabold leading-[0.98]', hero ? 'text-5xl md:text-7xl' : 'text-3xl md:text-4xl')}>
+            <Title className={cn('font-display font-extrabold leading-[0.98]', hero ? 'text-5xl md:text-7xl' : 'text-2xl md:text-4xl')}>
               Discover {city.name}
             </Title>
-            <p className={cn('max-w-md text-white/90', hero ? 'text-lg' : 'text-base')}>{city.slogan || city.tagline}</p>
+            <p className={cn('max-w-md text-white/90', hero ? 'text-lg' : 'hidden text-base sm:block')}>{city.slogan || city.tagline}</p>
             <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-white/85">
               <MapPin className="size-4 shrink-0" />
               <span>{city.province || city.name}</span>

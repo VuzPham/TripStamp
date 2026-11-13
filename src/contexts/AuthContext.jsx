@@ -9,7 +9,8 @@ function toUser(u) {
   return {
     id: u.id,
     email: u.email,
-    displayName: u.user_metadata?.display_name || u.email?.split('@')[0] || 'Bạn',
+    displayName: u.user_metadata?.display_name || u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'Bạn',
+    avatarUrl: u.user_metadata?.avatar_url || u.user_metadata?.picture || '',
   }
 }
 
@@ -42,11 +43,16 @@ export function AuthProvider({ children }) {
     setRoleLoading(true)
     supabase
       .from('profiles')
-      .select('role')
+      .select('role, display_name, avatar_url')
       .eq('id', user.id)
       .maybeSingle()
       .then(({ data }) => {
-        if (!cancelled) setIsAdmin(data?.role === 'admin')
+        if (cancelled) return
+        setIsAdmin(data?.role === 'admin')
+        // Hồ sơ trong database là nguồn đúng nhất cho tên và ảnh hiển thị.
+        if (data?.display_name || data?.avatar_url) {
+          setUser((u) => (u && u.id === user.id ? { ...u, displayName: data.display_name || u.displayName, avatarUrl: data.avatar_url || u.avatarUrl } : u))
+        }
       })
       .finally(() => !cancelled && setRoleLoading(false))
     return () => {
@@ -74,14 +80,27 @@ export function AuthProvider({ children }) {
     return { needsConfirmation: !data.session }
   }, [])
 
+  /** Đăng nhập bằng Google / Facebook. Quay lại /login rồi AuthPage tự chuyển về trang đang muốn vào. */
+  const signInWithProvider = useCallback(async (provider) => {
+    if (isDemo) throw new Error('Đăng nhập Google/Facebook cần kết nối Supabase.')
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/login` },
+    })
+    if (error) throw error
+  }, [])
+
+  /** Cập nhật tên/ảnh đang hiển thị ngay sau khi lưu hồ sơ. */
+  const patchUser = useCallback((patch) => setUser((u) => (u ? { ...u, ...patch } : u)), [])
+
   const signOut = useCallback(async () => {
     if (isDemo) return
     await supabase.auth.signOut()
   }, [])
 
   const value = useMemo(
-    () => ({ user, loading, isDemo, isAdmin, roleLoading, signIn, signUp, signOut }),
-    [user, loading, isAdmin, roleLoading, signIn, signUp, signOut],
+    () => ({ user, loading, isDemo, isAdmin, roleLoading, signIn, signUp, signInWithProvider, patchUser, signOut }),
+    [user, loading, isAdmin, roleLoading, signIn, signUp, signInWithProvider, patchUser, signOut],
   )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
