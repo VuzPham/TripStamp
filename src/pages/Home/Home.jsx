@@ -66,7 +66,7 @@ export default function Home() {
                     className="size-full object-cover"
                     onError={(e) => { if (!e.currentTarget.src.endsWith('/images/hero.svg')) e.currentTarget.src = '/images/hero.svg' }}
                   />
-                  <div className="absolute left-3 top-3 rounded-md bg-white/90 px-3 py-1.5 text-ink shadow">
+                  <div className="absolute left-3 top-3 rounded-md bg-white/90 px-3 py-1.5 text-[#0b2e4a] shadow">
                     <span className="font-display text-3xl font-extrabold leading-none">{places.length}</span>
                     <span className="ml-1.5 text-xs font-semibold">điểm đến</span>
                   </div>
@@ -162,8 +162,8 @@ export default function Home() {
               {spotlight.slice(1).map((p) => (
                 <li key={p.id}>
                   <Link to={`/places/${p.slug}`} className="flex gap-3 rounded-2xl border border-black/5 bg-white p-2 shadow-sm transition-shadow hover:shadow-md">
-                    <PlaceThumb place={p} className="size-20 shrink-0 rounded-xl" />
-                    <span className="min-w-0 flex-1 py-1">
+                    <span className="block size-20 shrink-0 overflow-hidden rounded-xl"><PlaceThumb place={p} className="h-full" /></span>
+                    <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 py-1">
                       <span className="block text-xs text-gray-500">{p.category?.icon} {p.category?.name}</span>
                       <span className="block truncate font-bold">{p.name}</span>
                       <span className="mt-0.5 flex items-center gap-1 truncate text-xs text-gray-600"><MapPin className="size-3 shrink-0" />{p.address}</span>

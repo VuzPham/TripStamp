@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
 import { useEffect } from 'react'
 import AccountMenu from './AccountMenu'
-import { applyDisplayPrefs, readDisplayPrefs } from '@/utils/displayPrefs'
+import { applyDisplayPrefs } from '@/utils/displayPrefs'
 import LocationSelector from '@/components/Location/LocationSelector'
 
 const items = [
@@ -18,7 +18,7 @@ const items = [
 export function TopBar() {
   const { user, isDemo } = useAuth()
   // Áp dụng tuỳ chọn hiển thị đã lưu ngay cả khi chưa đăng nhập
-  useEffect(() => applyDisplayPrefs(readDisplayPrefs()), [])
+  useEffect(() => applyDisplayPrefs(), [])
   return (
     <header className="sticky top-0 z-30 bg-brand-800 text-white shadow-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">

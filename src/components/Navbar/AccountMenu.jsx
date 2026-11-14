@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ChevronDown, ChevronLeft, ChevronRight, HelpCircle, LogOut, MessageSquareWarning, Moon, UserCircle } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, HelpCircle, LogOut, Monitor, Sun, MessageSquareWarning, Moon, UserCircle } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { applyDisplayPrefs, readDisplayPrefs } from '@/utils/displayPrefs'
+import { useDisplayPrefs } from '@/utils/displayPrefs'
 import { cn } from '@/lib/utils'
 
 const SUPPORT_EMAIL = import.meta.env.VITE_SUPPORT_EMAIL
@@ -28,10 +28,8 @@ export default function AccountMenu() {
   const location = useLocation()
   const [open, setOpen] = useState(false)
   const [panel, setPanel] = useState('main') // 'main' | 'display'
-  const [prefs, setPrefs] = useState(readDisplayPrefs)
+  const [prefs, setPrefs] = useDisplayPrefs()
   const rootRef = useRef(null)
-
-  useEffect(() => applyDisplayPrefs(prefs), []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const close = () => {
     setOpen(false)
@@ -52,11 +50,7 @@ export default function AccountMenu() {
   }, [open])
   useEffect(close, [location.pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const togglePref = (key) => {
-    const next = { ...prefs, [key]: !prefs[key] }
-    setPrefs(next)
-    applyDisplayPrefs(next, { save: true })
-  }
+  const togglePref = (key) => setPrefs({ [key]: !prefs[key] })
 
   async function logOut() {
     close()
@@ -147,7 +141,25 @@ export default function AccountMenu() {
                 </button>
                 <h2 className="text-lg font-bold">Display &amp; accessibility</h2>
               </div>
-              <ul className="mt-1 space-y-0.5">
+              <p className="px-2 pb-1 pt-2 text-sm font-semibold text-gray-600">Giao diện</p>
+              <div role="radiogroup" aria-label="Giao diện" className="grid grid-cols-3 gap-1.5 px-1">
+                {[['light', Sun, 'Sáng'], ['dark', Moon, 'Tối'], ['system', Monitor, 'Theo máy']].map(([id, Icon, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    role="radio"
+                    aria-checked={prefs.theme === id}
+                    onClick={() => setPrefs({ theme: id })}
+                    className={cn(
+                      'flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-xs font-semibold transition-colors',
+                      prefs.theme === id ? 'border-brand-700 bg-brand-50 text-brand-800' : 'border-black/10 text-gray-700 hover:bg-gray-100',
+                    )}
+                  >
+                    <Icon className="size-5" /> {label}
+                  </button>
+                ))}
+              </div>
+              <ul className="mt-2 space-y-0.5">
                 <Toggle label="Chữ lớn hơn" hint="Tăng cỡ chữ toàn app." checked={prefs.largeText} onChange={() => togglePref('largeText')} />
                 <Toggle label="Giảm chuyển động" hint="Tắt hiệu ứng chuyển cảnh và động ảnh." checked={prefs.reduceMotion} onChange={() => togglePref('reduceMotion')} />
               </ul>
@@ -168,7 +180,7 @@ function Toggle({ label, hint, checked, onChange }) {
           <span className="block text-xs font-normal text-gray-500">{hint}</span>
         </span>
         <span className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors', checked ? 'bg-brand-700' : 'bg-gray-300')}>
-          <span className={cn('absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow transition-transform', checked && 'translate-x-5')} />
+          <span className={cn('absolute left-0.5 top-0.5 size-5 rounded-full bg-[#ffffff] shadow transition-transform', checked && 'translate-x-5')} />
         </span>
       </button>
     </li>
