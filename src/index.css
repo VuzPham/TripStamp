@@ -85,8 +85,9 @@ html[data-motion='reduce'] *::after {
    Ghi đè các lớp tiện ích thường dùng; màu thương hiệu theo thành phố vẫn giữ nguyên. */
 html[data-theme='dark'] {
   color-scheme: dark;
-  --color-paper: #0e1616;
-  --color-ink: #e6eeee;
+  /* !important: themeVars() gán --color-paper/--color-ink inline theo thành phố, nên cần !important để chế độ tối thắng. */
+  --color-paper: #0e1616 !important;
+  --color-ink: #e6eeee !important;
   --ts-body: #dbe6e6;
   --ts-surface: #172121;
   --ts-surface-2: #1f2b2b;
