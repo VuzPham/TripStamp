@@ -23,16 +23,6 @@ export default function Profile() {
   )
 }
 
-function Avatar({ url, name, className = 'size-20 text-3xl' }) {
-  return url ? (
-    <img src={url} alt="" className={`${className} rounded-full object-cover ring-4 ring-white`} referrerPolicy="no-referrer" />
-  ) : (
-    <span className={`${className} grid place-items-center rounded-full bg-brand-700 font-bold text-white ring-4 ring-white`}>
-      {(name || '?').slice(0, 1).toUpperCase()}
-    </span>
-  )
-}
-
 function ProfileInner() {
   const { user, signOut, isDemo, isAdmin, patchUser } = useAuth()
   const { cities } = useCity()
@@ -99,31 +89,39 @@ function ProfileInner() {
 
   return (
     <div className="space-y-4">
-      <Card className="overflow-hidden">
-        <div className="h-24" style={{ background: 'linear-gradient(120deg, var(--color-brand-700), var(--color-stamp))' }} />
-        <div className="-mt-10 flex items-end gap-4 px-5 pb-5">
-          <div className="relative">
-            <Avatar url={form.avatarUrl} name={form.displayName} />
+      {/* Thẻ hồ sơ: dải gradient cao cố định nằm trong thẻ (overflow-hidden cắt theo bo góc);
+          avatar đặt tuyệt đối ngay đường giao giữa gradient và nền trắng; thông tin nằm dưới dải gradient. */}
+      <Card className="relative overflow-hidden">
+        <div aria-hidden="true" className="h-28 w-full sm:h-32" style={{ background: 'linear-gradient(120deg, var(--color-brand-700), var(--color-stamp))' }} />
+        <div className="absolute left-5 top-28 -translate-y-1/2 sm:top-32">
+          <div className="relative size-24 sm:size-28">
+            {form.avatarUrl ? (
+              <img src={form.avatarUrl} alt="" referrerPolicy="no-referrer" className="size-full rounded-full border-4 border-white bg-white object-cover shadow" />
+            ) : (
+              <span className="grid size-full place-items-center rounded-full border-4 border-white bg-brand-700 text-4xl font-bold text-white shadow">
+                {(form.displayName || '?').slice(0, 1).toUpperCase()}
+              </span>
+            )}
             <button
               type="button"
               aria-label="Đổi ảnh đại diện"
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
-              className="absolute -bottom-1 -right-1 grid size-8 place-items-center rounded-full bg-brand-700 text-white shadow hover:bg-brand-800 disabled:opacity-60"
+              className="absolute bottom-0 right-0 grid size-9 place-items-center rounded-full border-2 border-white bg-brand-700 text-white shadow hover:bg-brand-800 disabled:opacity-60"
             >
-              {uploading ? <Spinner className="size-4" /> : <Camera className="size-4" />}
+              {uploading ? <Spinner className="size-4 border-white border-t-transparent" /> : <Camera className="size-4" />}
             </button>
             <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={onFile} />
           </div>
-          <div className="min-w-0 pb-1">
-            <p className="truncate text-lg font-bold">{form.displayName}</p>
-            <p className="truncate text-sm text-gray-500">{user.email}</p>
-            {isAdmin && (
-              <Link to="/admin" className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline">
-                <ShieldCheck className="size-3.5" /> Vào trang quản trị
-              </Link>
-            )}
-          </div>
+        </div>
+        <div className="flex flex-col gap-1 px-5 pb-5 pt-14 sm:min-h-24 sm:pl-[10.5rem] sm:pt-4">
+          <p className="truncate text-xl font-bold leading-tight">{form.displayName}</p>
+          <p className="truncate text-sm text-gray-500">{user.email}</p>
+          {isAdmin && (
+            <Link to="/admin" className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-sm font-semibold text-brand-800 hover:bg-brand-100">
+              <ShieldCheck className="size-4" /> Vào trang quản trị
+            </Link>
+          )}
         </div>
       </Card>
 

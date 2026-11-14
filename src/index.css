@@ -70,3 +70,13 @@ h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
     to { opacity: 1; transform: scale(1) rotate(var(--tilt, 3deg)); }
   }
 }
+
+/* Display & accessibility (chọn trong menu tài khoản) */
+html[data-text='large'] { font-size: 112.5%; }
+html[data-motion='reduce'] *,
+html[data-motion='reduce'] *::before,
+html[data-motion='reduce'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

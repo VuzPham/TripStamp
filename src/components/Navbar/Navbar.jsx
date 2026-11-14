@@ -2,6 +2,9 @@ import { NavLink, Link } from 'react-router-dom'
 import { Home, Map, ScanLine, Stamp, Gift, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
+import { useEffect } from 'react'
+import AccountMenu from './AccountMenu'
+import { applyDisplayPrefs, readDisplayPrefs } from '@/utils/displayPrefs'
 import LocationSelector from '@/components/Location/LocationSelector'
 
 const items = [
@@ -14,6 +17,8 @@ const items = [
 
 export function TopBar() {
   const { user, isDemo } = useAuth()
+  // Áp dụng tuỳ chọn hiển thị đã lưu ngay cả khi chưa đăng nhập
+  useEffect(() => applyDisplayPrefs(readDisplayPrefs()), [])
   return (
     <header className="sticky top-0 z-30 bg-brand-800 text-white shadow-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
@@ -42,13 +47,7 @@ export function TopBar() {
           ))}
         </nav>
         {user && !isDemo ? (
-          <Link to="/profile" aria-label="Tài khoản" className="grid size-9 place-items-center overflow-hidden rounded-full ring-1 ring-white/30 hover:ring-white/60">
-            {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />
-            ) : (
-              <span className="grid size-full place-items-center bg-white/20 text-sm font-bold text-white">{user.displayName.slice(0, 1).toUpperCase()}</span>
-            )}
-          </Link>
+          <AccountMenu />
         ) : isDemo ? (
           <Link to="/profile" aria-label="Tài khoản" className="grid size-9 place-items-center rounded-full hover:bg-white/10">
             <User className="size-5 text-white" />

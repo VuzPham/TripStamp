@@ -12,6 +12,7 @@ import MyCollection from '@/pages/MyCollection/MyCollection'
 import Rewards from '@/pages/Rewards/Rewards'
 import Profile from '@/pages/Profile/Profile'
 import DevQR from '@/pages/Dev/DevQR'
+import Legal from '@/pages/Legal/Legal'
 import AuthPage from '@/pages/Auth/AuthPage'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { Button } from '@/components/ui/button'
@@ -53,6 +54,9 @@ const router = createBrowserRouter([
       { path: '/', element: <Home /> },
       { path: '/explore', element: <Explore /> },
       { path: '/places/:slug', element: <PlaceDetail /> },
+      { path: '/privacy', element: <Legal page="privacy" /> },
+      { path: '/terms', element: <Legal page="terms" /> },
+      { path: '/data-deletion', element: <Legal page="data-deletion" /> },
       { path: '/login', element: <AuthPage /> },
       { path: '/register', element: <AuthPage initialMode="signup" /> },
       {
